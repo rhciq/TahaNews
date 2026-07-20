@@ -4,15 +4,11 @@
   --muted: #6b6b76;
   --line: #e6e6ea;
   --accent: #ff3b2e;
-  --accent-dim: #ffe6e3;
   --dark: #111114;
   --font: 'Cairo', sans-serif;
-  --max: 1180px;
 }
 
 * { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -28,7 +24,7 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Header ---------- */
 
-.site-header {
+header {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -52,26 +48,21 @@ img { max-width: 100%; display: block; }
   white-space: nowrap;
 }
 
-.logo-mark {
-  color: var(--accent);
-  font-size: 16px;
-}
-
-.logo-text b {
+.logo span {
   font-weight: 900;
-  color: var(--accent);
+  color: var(--ink);
 }
 
-nav {
+header nav {
   display: flex;
   gap: clamp(16px, 3vw, 32px);
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-nav::-webkit-scrollbar { display: none; }
+header nav::-webkit-scrollbar { display: none; }
 
-nav a {
+header nav a {
   position: relative;
   font-size: 15px;
   font-weight: 700;
@@ -80,7 +71,7 @@ nav a {
   transition: color 0.15s ease;
 }
 
-nav a::after {
+header nav a::after {
   content: "";
   position: absolute;
   right: 0;
@@ -91,66 +82,41 @@ nav a::after {
   transition: width 0.2s ease;
 }
 
-nav a:hover {
+header nav a:hover {
   color: var(--accent);
 }
 
-nav a:hover::after {
+header nav a:hover::after {
   width: 100%;
 }
 
-nav a:focus-visible,
-.logo:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-
-/* ---------- Breaking ticker ---------- */
+/* ---------- Breaking bar ---------- */
 
 .breaking {
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  gap: 16px;
   background: var(--dark);
   color: #fff;
+  padding: 10px clamp(20px, 5vw, 64px);
   overflow: hidden;
 }
 
-.breaking-badge {
+.breaking > span {
   flex-shrink: 0;
   background: var(--accent);
   color: #fff;
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.5px;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
+  padding: 6px 14px;
+  border-radius: 3px;
 }
 
-.ticker {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.ticker-track {
-  display: inline-block;
-  white-space: nowrap;
-  padding-right: 100%;
+.breaking marquee {
   font-size: 14px;
   font-weight: 600;
-  animation: ticker 22s linear infinite;
-}
-
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ticker-track { animation: none; padding-right: 20px; }
+  color: #fff;
 }
 
 /* ---------- Hero ---------- */
@@ -164,50 +130,26 @@ nav a:focus-visible,
   border-bottom: 1px solid var(--line);
 }
 
-.hero-media {
-  overflow: hidden;
-  border-radius: 6px;
-  aspect-ratio: 16 / 11;
-  background: var(--line);
-}
-
-.hero-media img {
+.hero img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 11;
   object-fit: cover;
+  border-radius: 6px;
+  background: var(--line);
 }
 
 .hero-text { min-width: 0; }
 
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--accent);
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.6px;
-  margin-bottom: 14px;
-}
-
-.eyebrow:empty { display: none; }
-
-.eyebrow::before {
-  content: "";
-  width: 3px;
-  height: 14px;
-  background: var(--accent);
-  display: inline-block;
-}
-
-#hero-title {
+.hero-text h1 {
   font-size: clamp(1.9rem, 3.6vw, 3rem);
   font-weight: 800;
   line-height: 1.15;
   margin: 0 0 16px;
+  padding-right: 14px;
+  border-right: 4px solid var(--accent);
 }
 
-#hero-description {
+.hero-text p {
   font-size: 1.05rem;
   color: var(--muted);
   line-height: 1.7;
@@ -215,31 +157,18 @@ nav a:focus-visible,
   max-width: 56ch;
 }
 
-/* ---------- Section heading ---------- */
+/* ---------- Latest news heading ---------- */
 
 .latest {
   padding: clamp(32px, 5vw, 56px) clamp(20px, 5vw, 64px) 80px;
 }
 
-.section-heading {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 32px;
-}
-
-.section-heading h2 {
+.latest h2 {
   font-size: 1.5rem;
   font-weight: 800;
-  margin: 0;
+  margin: 0 0 32px;
   padding-right: 12px;
   border-right: 4px solid var(--accent);
-}
-
-.section-heading .rule {
-  flex: 1;
-  height: 1px;
-  background: var(--line);
 }
 
 /* ---------- News grid ---------- */
@@ -251,36 +180,11 @@ nav a:focus-visible,
 }
 
 .news-card {
-  opacity: 0;
-  animation: rise 0.5s ease forwards;
-}
-
-.news-card:nth-child(1) { animation-delay: 0.02s; }
-.news-card:nth-child(2) { animation-delay: 0.06s; }
-.news-card:nth-child(3) { animation-delay: 0.1s; }
-.news-card:nth-child(4) { animation-delay: 0.14s; }
-.news-card:nth-child(5) { animation-delay: 0.18s; }
-.news-card:nth-child(6) { animation-delay: 0.22s; }
-
-@keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .news-card { animation: none; opacity: 1; }
-}
-
-.news-card .thumb {
   position: relative;
-  overflow: hidden;
-  border-radius: 4px;
-  aspect-ratio: 16 / 10;
-  background: var(--line);
-  margin-bottom: 14px;
+  padding-top: 6px;
 }
 
-.news-card .thumb::before {
+.news-card::before {
   content: "";
   position: absolute;
   top: 0; right: 0; left: 0;
@@ -289,31 +193,24 @@ nav a:focus-visible,
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.25s ease;
-  z-index: 2;
 }
 
-.news-card:hover .thumb::before {
+.news-card:hover::before {
   transform: scaleX(1);
 }
 
 .news-card img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
+  border-radius: 4px;
+  background: var(--line);
+  margin-bottom: 14px;
   transition: transform 0.35s ease;
 }
 
 .news-card:hover img {
-  transform: scale(1.04);
-}
-
-.news-card .card-eyebrow {
-  display: block;
-  color: var(--accent);
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
+  transform: scale(1.03);
 }
 
 .news-card h3 {
@@ -357,18 +254,18 @@ footer {
   .hero {
     grid-template-columns: 1fr;
   }
-  .hero-media {
+  .hero img {
     aspect-ratio: 16 / 9;
   }
 }
 
 @media (max-width: 560px) {
-  .site-header {
+  header {
     padding: 14px 18px;
   }
-  .breaking-badge {
+  .breaking > span {
     font-size: 11px;
-    padding: 8px 14px;
+    padding: 5px 10px;
   }
   .news-grid {
     grid-template-columns: 1fr;
