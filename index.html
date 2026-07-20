@@ -4,89 +4,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Taha News | طه نيوز</title>
-
 <link rel="stylesheet" href="style.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <header>
-
 <div class="logo">
 📰 <span>TAHA NEWS</span>
 </div>
-
 <nav>
-
-<a href="#" onclick="loadCategory('all')">الرئيسية</a>
-
-<a href="#" onclick="loadCategory('iraq')">العراق</a>
-
-<a href="#" onclick="loadCategory('world')">العالم</a>
-
-<a href="#" onclick="loadCategory('business')">الاقتصاد</a>
-
-<a href="#" onclick="loadCategory('sports')">الرياضة</a>
-
-<a href="#" onclick="loadCategory('technology')">التكنولوجيا</a>
-
+<a href="#" onclick="loadCategory('all'); return false;">الرئيسية</a>
+<a href="#" onclick="loadCategory('iraq'); return false;">العراق</a>
+<a href="#" onclick="loadCategory('world'); return false;">العالم</a>
+<a href="#" onclick="loadCategory('business'); return false;">الاقتصاد</a>
+<a href="#" onclick="loadCategory('sports'); return false;">الرياضة</a>
+<a href="#" onclick="loadCategory('technology'); return false;">التكنولوجيا</a>
 </nav>
-
 </header>
 
 <section class="breaking">
-
 <span>🔴 عاجل</span>
-
 <marquee id="breaking-news">
-جاري تحميل الأخبار...
+جاري تحميل الأخبار الحية...
 </marquee>
-
 </section>
 
 <section class="hero">
-
 <img id="hero-image" src="" alt="">
-
 <div class="hero-text">
-
-<h1 id="hero-title">
-جاري تحميل الأخبار...
-</h1>
-
-<p id="hero-description">
-يرجى الانتظار...
-</p>
-
+<h1 id="hero-title">جاري تحميل الأخبار...</h1>
+<p id="hero-description">يرجى الانتظار قليلاً...</p>
 </div>
-
 </section>
 
 <section class="latest">
-
 <h2>آخر الأخبار</h2>
-
-<div id="news-container" class="news-grid">
-
-</div>
-
+<div id="news-container" class="news-grid"></div>
 </section>
 
 <footer>
-
-© 2026 TAHA NEWS
-
+© 2026 TAHA NEWS - جميع الحقوق محفوظة
 </footer>
 
 <script src="script.js"></script>
-
 </body>
 
 </html>
