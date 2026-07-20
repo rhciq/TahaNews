@@ -1,4 +1,5 @@
-const API_URL = "https://tahanews2.yajahtaha.workers.dev/";
+// استخدام مصدر بديل مجاني ومفتوح (RSS مع تحويله إلى JSON)
+const API_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/arabic/rss.xml";
 
 const heroImage = document.getElementById("hero-image");
 const heroTitle = document.getElementById("hero-title");
@@ -18,29 +19,23 @@ async function loadNews(category = "all") {
 
         const data = await response.json();
 
-        allNews = data.results || [];
+        // تنسيق البيانات لتتطابق مع تصميم موقعك
+        allNews = (data.items || []).map(item => {
+            // محاولة استخراج الصورة من المحتوى أو استخدام صورة افتراضية
+            let imgMatch = item.content ? item.content.match(/<img[^>]+src="([^">]+)"/) : null;
+            let imageUrl = imgMatch ? imgMatch[1] : (item.thumbnail || "https://picsum.photos/500/300");
+
+            return {
+                title: item.title,
+                description: item.description ? item.description.replace(/<[^>]*>?/gm, '') : "",
+                content: item.content ? item.content.replace(/<[^>]*>?/gm, '') : (item.description || ""),
+                image_url: imageUrl,
+                category: category,
+                country: "iraq" // لتسهيل الفلترة
+            };
+        });
 
         let news = allNews;
-
-        if(category === "iraq"){
-            news = allNews.filter(item => item.country?.includes("iraq"));
-        }
-
-        if(category === "sports"){
-            news = allNews.filter(item => item.category?.includes("sports"));
-        }
-
-        if(category === "business"){
-            news = allNews.filter(item => item.category?.includes("business"));
-        }
-
-        if(category === "technology"){
-            news = allNews.filter(item => item.category?.includes("technology"));
-        }
-
-        if(category === "world"){
-            news = allNews.filter(item => !item.country?.includes("iraq"));
-        }
 
         if(news.length === 0){
             heroTitle.textContent = "لا توجد أخبار حالياً";
@@ -51,9 +46,9 @@ async function loadNews(category = "all") {
 
         const first = news[0];
 
-        heroImage.src = first.image_url || "https://picsum.photos/1200/600";
+        heroImage.src = first.image_url;
         heroTitle.textContent = first.title;
-        heroDescription.textContent = first.description || "";
+        heroDescription.textContent = first.description;
 
         if(breakingNews){
             breakingNews.textContent = first.title;
@@ -64,9 +59,9 @@ async function loadNews(category = "all") {
         news.forEach((item, index) => {
             newsContainer.innerHTML += `
             <div class="news-card" onclick="showFullNews(${index}, '${category}')" style="cursor: pointer;">
-                <img src="${item.image_url || "https://picsum.photos/500/300"}">
+                <img src="${item.image_url}">
                 <h3>${item.title}</h3>
-                <p>${item.description || ""}</p>
+                <p>${item.description}</p>
             </div>
             `;
         });
@@ -83,23 +78,14 @@ async function loadNews(category = "all") {
     }
 }
 
-// دالة عرض الخبر بالاعتماد على الوصف المتاح في النسخة المجانية
+// دالة عرض الخبر كاملاً مع زر الخروج للقائمة الرئيسية
 window.showFullNews = function(index, category) {
     let news = allNews;
-    if(category === "iraq") news = allNews.filter(item => item.country?.includes("iraq"));
-    if(category === "sports") news = allNews.filter(item => item.category?.includes("sports"));
-    if(category === "business") news = allNews.filter(item => item.category?.includes("business"));
-    if(category === "technology") news = allNews.filter(item => item.category?.includes("technology"));
-    if(category === "world") news = allNews.filter(item => !item.country?.includes("iraq"));
-
     const item = news[index];
     if (!item) return;
 
     document.querySelector(".hero").style.display = "none";
     document.querySelector(".latest").querySelector("h2").style.display = "none";
-
-    // استخدام الـ description أو محتوى الـ content إن وجد، وإذا لم يوجد نعرض الوصف المتاح بشكل كامل
-    let fullText = item.content && !item.content.includes("PAID") ? item.content : (item.description || "تفاصيل الخبر غير متوفرة بشكل كامل من المصدر حالياً.");
 
     newsContainer.innerHTML = `
         <div class="full-news-page" style="grid-column: 1 / -1; background: #fff; padding: 25px; border-radius: 8px;">
@@ -107,9 +93,9 @@ window.showFullNews = function(index, category) {
                 ⬅️ العودة للقائمة الرئيسية
             </button>
             <h1 style="margin-bottom: 15px; color: #111114; font-size: 24px; line-height: 1.5;">${item.title}</h1>
-            <img src="${item.image_url || "https://picsum.photos/800/400"}" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
+            <img src="${item.image_url}" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
             <div style="font-size: 18px; line-height: 1.9; color: #333;">
-                <p style="margin-bottom: 15px;">${fullText}</p>
+                <p style="margin-bottom: 15px;">${item.content}</p>
             </div>
         </div>
     `;
