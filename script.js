@@ -12,11 +12,17 @@ async function loadNews(category = "all") {
     try {
 
         const response = await fetch(API_URL);
+
+        if(!response.ok){
+            throw new Error("فشل الاتصال بمصدر الأخبار");
+        }
+
         const data = await response.json();
 
         allNews = data.results || [];
 
         let news = allNews;
+
 
         if(category === "iraq"){
             news = allNews.filter(item => item.country?.includes("iraq"));
@@ -40,34 +46,42 @@ async function loadNews(category = "all") {
 
 
         if(news.length === 0){
+
             heroTitle.textContent = "لا توجد أخبار حالياً";
             heroDescription.textContent = "";
             newsContainer.innerHTML = "";
+
             return;
         }
 
 
         const first = news[0];
 
+
         heroImage.src = first.image_url || "https://picsum.photos/1200/600";
         heroTitle.textContent = first.title;
         heroDescription.textContent = first.description || "";
 
 
-        if (breakingNews) {
+        if(breakingNews){
             breakingNews.textContent = first.title;
         }
 
 
         newsContainer.innerHTML = "";
 
+
         news.forEach(item => {
 
             newsContainer.innerHTML += `
             <div class="news-card">
+
                 <img src="${item.image_url || "https://picsum.photos/500/300"}">
+
                 <h3>${item.title}</h3>
+
                 <p>${item.description || ""}</p>
+
             </div>
             `;
 
@@ -76,15 +90,23 @@ async function loadNews(category = "all") {
 
     } catch(error){
 
-        heroTitle.textContent = "حدث خطأ أثناء جلب الأخبار";
-        heroDescription.textContent = error.message;
+        console.log("خطأ:", error);
+
+        heroTitle.textContent = "جاري إعادة تحميل الأخبار...";
+        heroDescription.textContent = "يرجى الانتظار";
+
+        setTimeout(() => {
+            loadNews(category);
+        },5000);
 
     }
 }
 
 
 window.loadCategory = function(category){
+
     loadNews(category);
+
 }
 
 
@@ -92,5 +114,7 @@ loadNews();
 
 
 setInterval(() => {
-    loadNews();
+
+    loadNews("all");
+
 },300000);
