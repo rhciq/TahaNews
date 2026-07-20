@@ -83,9 +83,8 @@ async function loadNews(category = "all") {
     }
 }
 
-// دالة عرض الخبر كاملاً مع زر الخروج للقائمة الرئيسية
+// دالة عرض الخبر بالاعتماد على الوصف المتاح في النسخة المجانية
 window.showFullNews = function(index, category) {
-    // تصفية الأخبار بناءً على القسم الحالي للحفاظ على الترتيب الصحيح
     let news = allNews;
     if(category === "iraq") news = allNews.filter(item => item.country?.includes("iraq"));
     if(category === "sports") news = allNews.filter(item => item.category?.includes("sports"));
@@ -96,19 +95,21 @@ window.showFullNews = function(index, category) {
     const item = news[index];
     if (!item) return;
 
-    // إخفاء الـ Hero section وباقي الأخبار مؤقتاً وعرض الخبر كاملاً مكانها
     document.querySelector(".hero").style.display = "none";
     document.querySelector(".latest").querySelector("h2").style.display = "none";
 
+    // استخدام الـ description أو محتوى الـ content إن وجد، وإذا لم يوجد نعرض الوصف المتاح بشكل كامل
+    let fullText = item.content && !item.content.includes("PAID") ? item.content : (item.description || "تفاصيل الخبر غير متوفرة بشكل كامل من المصدر حالياً.");
+
     newsContainer.innerHTML = `
-        <div class="full-news-page" style="grid-column: 1 / -1; background: #fff; padding: 20px; border-radius: 8px;">
-            <button onclick="loadNews('${category}'); document.querySelector('.hero').style.display = 'flex'; document.querySelector('.latest').querySelector('h2').style.display = 'block';" style="background: #dc3545; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-family: 'Cairo', sans-serif;">
+        <div class="full-news-page" style="grid-column: 1 / -1; background: #fff; padding: 25px; border-radius: 8px;">
+            <button onclick="loadNews('${category}'); document.querySelector('.hero').style.display = 'grid'; document.querySelector('.latest').querySelector('h2').style.display = 'block';" style="background: #111114; color: white; border: none; padding: 10px 20px; font-size: 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-family: 'Cairo', sans-serif;">
                 ⬅️ العودة للقائمة الرئيسية
             </button>
-            <h1 style="margin-bottom: 15px; color: #333;">${item.title}</h1>
+            <h1 style="margin-bottom: 15px; color: #111114; font-size: 24px; line-height: 1.5;">${item.title}</h1>
             <img src="${item.image_url || "https://picsum.photos/800/400"}" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-            <div style="font-size: 18px; line-height: 1.8; color: #444;">
-                <p>${item.content || item.description || "لا يوجد نص تفصيلي لهذا الخبر."}</p>
+            <div style="font-size: 18px; line-height: 1.9; color: #333;">
+                <p style="margin-bottom: 15px;">${fullText}</p>
             </div>
         </div>
     `;
