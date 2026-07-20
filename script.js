@@ -4,6 +4,7 @@ const heroImage = document.getElementById("hero-image");
 const heroTitle = document.getElementById("hero-title");
 const heroDescription = document.getElementById("hero-description");
 const newsContainer = document.getElementById("news-container");
+const breakingNews = document.getElementById("breaking-news");
 
 async function loadNews() {
     try {
@@ -38,6 +39,11 @@ async function loadNews() {
             `;
 
         });
+
+        // الشريط الإخباري
+        if (breakingNews) {
+            breakingNews.textContent = first.title;
+        }
 
     } catch(error){
 
