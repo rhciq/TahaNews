@@ -10,23 +10,44 @@ let allNews = [];
 
 async function loadNews(category = "all") {
     try {
-        const response = await fetch(API_URL);
 
-        if(!response.ok){
+        // منع الكاش
+        const response = await fetch(API_URL + "&_=" + Date.now(), {
+            method: "GET",
+            cache: "no-store",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        });
+
+        if (!response.ok) {
             throw new Error("فشل الاتصال بمصدر الأخبار");
         }
 
         const data = await response.json();
 
         allNews = (data.items || []).map(item => {
-            let imgMatch = item.content ? item.content.match(/<img[^>]+src="([^">]+)"/) : null;
-            let imageUrl = imgMatch ? imgMatch[1] : (item.thumbnail || "https://picsum.photos/500/300");
 
-            let cleanDesc = item.description ? item.description.replace(/<[^>]*>?/gm, '').replace(/\.\.\.$/, '') : "";
-            let cleanContent = item.content ? item.content.replace(/<[^>]*>?/gm, '').replace(/\.\.\.$/, '') : "";
-            
-            // دمج الوصف والمحتوى بالكامل وضمان عدم وجود قص للنص
-            let fullText = cleanContent.length >= cleanDesc.length ? cleanContent : cleanDesc;
+            let imgMatch = item.content
+                ? item.content.match(/<img[^>]+src="([^">]+)"/)
+                : null;
+
+            let imageUrl = imgMatch
+                ? imgMatch[1]
+                : (item.thumbnail || "https://picsum.photos/500/300");
+
+            let cleanDesc = item.description
+                ? item.description.replace(/<[^>]*>?/gm, "").replace(/\.\.\.$/, "")
+                : "";
+
+            let cleanContent = item.content
+                ? item.content.replace(/<[^>]*>?/gm, "").replace(/\.\.\.$/, "")
+                : "";
+
+            let fullText = cleanContent.length >= cleanDesc.length
+                ? cleanContent
+                : cleanDesc;
+
             if (cleanDesc && cleanContent && cleanContent !== cleanDesc) {
                 fullText = cleanDesc + " " + cleanContent;
             }
@@ -41,80 +62,98 @@ async function loadNews(category = "all") {
             };
         });
 
-        let news = allNews;
-
-        if(news.length === 0){
+        if (allNews.length === 0) {
             heroTitle.textContent = "لا توجد أخبار حالياً";
             heroDescription.textContent = "";
             newsContainer.innerHTML = "";
             return;
         }
 
-        const first = news[0];
+        const first = allNews[0];
 
         heroImage.src = first.image_url;
         heroTitle.textContent = first.title;
         heroDescription.textContent = first.description;
 
-        if(breakingNews){
+        if (breakingNews) {
             breakingNews.textContent = first.title;
         }
 
         newsContainer.innerHTML = "";
 
-        news.forEach((item, index) => {
+        allNews.forEach((item, index) => {
+
             newsContainer.innerHTML += `
-            <div class="news-card" onclick="showFullNews(${index}, '${category}')" style="cursor: pointer;">
-                <img src="${item.image_url}">
+            <div class="news-card" onclick="showFullNews(${index}, '${category}')" style="cursor:pointer;">
+                <img src="${item.image_url}" alt="">
                 <h3>${item.title}</h3>
                 <p>${item.description}</p>
             </div>
             `;
+
         });
 
-    } catch(error){
-        console.log("خطأ:", error);
+    } catch (error) {
+
+        console.log(error);
 
         heroTitle.textContent = "جاري إعادة تحميل الأخبار...";
         heroDescription.textContent = "يرجى الانتظار";
 
         setTimeout(() => {
             loadNews(category);
-        },5000);
+        }, 5000);
+
     }
 }
 
-// دالة عرض الخبر كاملاً بدون أي قص نهائياً
 window.showFullNews = function(index, category) {
-    let news = allNews;
-    const item = news[index];
+
+    const item = allNews[index];
     if (!item) return;
 
     document.querySelector(".hero").style.display = "none";
-    document.querySelector(".latest").querySelector("h2").style.display = "none";
+    document.querySelector(".latest h2").style.display = "none";
 
     newsContainer.innerHTML = `
-        <div class="full-news-page" style="grid-column: 1 / -1; background: #fff; padding: 25px; border-radius: 8px;">
-            <button onclick="loadNews('${category}'); document.querySelector('.hero').style.display = 'grid'; document.querySelector('.latest').querySelector('h2').style.display = 'block';" style="background: #111114; color: white; border: none; padding: 10px 20px; font-size: 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; font-family: 'Cairo', sans-serif;">
-                ⬅️ العودة للقائمة الرئيسية
-            </button>
-            <h1 style="margin-bottom: 15px; color: #111114; font-size: 24px; line-height: 1.5;">${item.title}</h1>
-            <img src="${item.image_url}" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-            <div style="font-size: 18px; line-height: 1.9; color: #333;">
-                <p style="margin-bottom: 15px;">${item.content}</p>
-            </div>
+    <div class="full-news-page" style="grid-column:1/-1;background:#fff;padding:25px;border-radius:8px;">
+        <button onclick="backHome('${category}')" style="background:#111114;color:#fff;border:none;padding:10px 20px;border-radius:6px;cursor:pointer;margin-bottom:20px;">
+            ⬅️ العودة للقائمة الرئيسية
+        </button>
+
+        <h1 style="margin-bottom:15px;color:#111114;line-height:1.6;">
+            ${item.title}
+        </h1>
+
+        <img src="${item.image_url}" style="width:100%;max-height:450px;object-fit:cover;border-radius:8px;margin-bottom:20px;">
+
+        <div style="font-size:18px;line-height:2;color:#333;">
+            ${item.content}
         </div>
+    </div>
     `;
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
 };
 
-window.loadCategory = function(category){
+window.backHome = function(category) {
+    document.querySelector(".hero").style.display = "grid";
+    document.querySelector(".latest h2").style.display = "block";
     loadNews(category);
-}
+};
 
+window.loadCategory = function(category) {
+    loadNews(category);
+};
+
+// أول تحميل
 loadNews();
 
+// تحديث تلقائي كل دقيقة
 setInterval(() => {
     loadNews("all");
-}, 300000);
+}, 60000);
