@@ -214,6 +214,31 @@ header nav a:hover::after{
   overflow:hidden;
 }
 
+/* صفحة عرض الخبر كاملاً وزر الرجوع */
+.full-news-page {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.full-news-page button {
+  background-color: var(--dark) !important;
+  color: #fff;
+  font-family: var(--font);
+  font-weight: 700;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.full-news-page button:hover {
+  background-color: var(--accent) !important;
+}
+
 /* Footer */
 
 footer{
