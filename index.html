@@ -1,92 +1,61 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Taha News | طه نيوز</title>
-
 <link rel="stylesheet" href="style.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
-<header>
-
-<div class="logo">
-📰 <span>TAHA NEWS</span>
-</div>
-
-<nav>
-
-<a href="#" onclick="loadCategory('all')">الرئيسية</a>
-
-<a href="#" onclick="loadCategory('iraq')">العراق</a>
-
-<a href="#" onclick="loadCategory('world')">العالم</a>
-
-<a href="#" onclick="loadCategory('business')">الاقتصاد</a>
-
-<a href="#" onclick="loadCategory('sports')">الرياضة</a>
-
-<a href="#" onclick="loadCategory('technology')">التكنولوجيا</a>
-
-</nav>
-
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-mark">◆</span>
+    <span class="logo-text">TAHA<b>NEWS</b></span>
+  </div>
+  <nav>
+    <a href="#" onclick="loadCategory('all')">الرئيسية</a>
+    <a href="#" onclick="loadCategory('iraq')">العراق</a>
+    <a href="#" onclick="loadCategory('world')">العالم</a>
+    <a href="#" onclick="loadCategory('business')">الاقتصاد</a>
+    <a href="#" onclick="loadCategory('sports')">الرياضة</a>
+    <a href="#" onclick="loadCategory('technology')">التكنولوجيا</a>
+  </nav>
 </header>
 
 <section class="breaking">
-
-<span>🔴 عاجل</span>
-
-<marquee id="breaking-news">
-جاري تحميل الأخبار...
-</marquee>
-
+  <span class="breaking-badge">عاجل</span>
+  <div class="ticker">
+    <span id="breaking-news" class="ticker-track">جاري تحميل الأخبار...</span>
+  </div>
 </section>
 
 <section class="hero">
-
-<img id="hero-image" src="" alt="">
-
-<div class="hero-text">
-
-<h1 id="hero-title">
-جاري تحميل الأخبار...
-</h1>
-
-<p id="hero-description">
-يرجى الانتظار...
-</p>
-
-</div>
-
+  <div class="hero-media">
+    <img id="hero-image" src="" alt="">
+  </div>
+  <div class="hero-text">
+    <span class="eyebrow" id="hero-eyebrow"></span>
+    <h1 id="hero-title">جاري تحميل الأخبار...</h1>
+    <p id="hero-description">يرجى الانتظار...</p>
+  </div>
 </section>
 
 <section class="latest">
-
-<h2>آخر الأخبار</h2>
-
-<div id="news-container" class="news-grid">
-
-</div>
-
+  <div class="section-heading">
+    <h2>آخر الأخبار</h2>
+    <span class="rule"></span>
+  </div>
+  <div id="news-container" class="news-grid"></div>
 </section>
 
 <footer>
-
-© 2026 TAHA NEWS
-
+  <span>© 2026 TAHA NEWS</span>
 </footer>
 
 <script src="script.js"></script>
-
 </body>
-
 </html>
