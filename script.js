@@ -1,4 +1,3 @@
-// استخدام مصدر بديل مجاني ومفتوح (RSS مع تحويله إلى JSON)
 const API_URL = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/arabic/rss.xml";
 
 const heroImage = document.getElementById("hero-image");
@@ -19,19 +18,26 @@ async function loadNews(category = "all") {
 
         const data = await response.json();
 
-        // تنسيق البيانات لتتطابق مع تصميم موقعك
         allNews = (data.items || []).map(item => {
-            // محاولة استخراج الصورة من المحتوى أو استخدام صورة افتراضية
             let imgMatch = item.content ? item.content.match(/<img[^>]+src="([^">]+)"/) : null;
             let imageUrl = imgMatch ? imgMatch[1] : (item.thumbnail || "https://picsum.photos/500/300");
 
+            let cleanDesc = item.description ? item.description.replace(/<[^>]*>?/gm, '').replace(/\.\.\.$/, '') : "";
+            let cleanContent = item.content ? item.content.replace(/<[^>]*>?/gm, '').replace(/\.\.\.$/, '') : "";
+            
+            // دمج الوصف والمحتوى بالكامل وضمان عدم وجود قص للنص
+            let fullText = cleanContent.length >= cleanDesc.length ? cleanContent : cleanDesc;
+            if (cleanDesc && cleanContent && cleanContent !== cleanDesc) {
+                fullText = cleanDesc + " " + cleanContent;
+            }
+
             return {
                 title: item.title,
-                description: item.description ? item.description.replace(/<[^>]*>?/gm, '') : "",
-                content: item.content ? item.content.replace(/<[^>]*>?/gm, '') : (item.description || ""),
+                description: cleanDesc,
+                content: fullText.trim() || item.title,
                 image_url: imageUrl,
                 category: category,
-                country: "iraq" // لتسهيل الفلترة
+                country: "iraq"
             };
         });
 
@@ -78,7 +84,7 @@ async function loadNews(category = "all") {
     }
 }
 
-// دالة عرض الخبر كاملاً مع زر الخروج للقائمة الرئيسية
+// دالة عرض الخبر كاملاً بدون أي قص نهائياً
 window.showFullNews = function(index, category) {
     let news = allNews;
     const item = news[index];
